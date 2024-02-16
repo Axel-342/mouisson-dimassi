@@ -1,4 +1,4 @@
-const products = [
+const campaigns = [
   {
     "colors": ["Blue", "White", "Black"],
     "_id": "107fb5b75607497b96722bda5b504926",
@@ -74,13 +74,13 @@ const products = [
 ];
 
 exports.find = () => {
-  return new Promise((resolve, reject) => resolve(JSON.parse(JSON.stringify(products))));
+  return new Promise((resolve, reject) => resolve(JSON.parse(JSON.stringify(campaigns))));
 }
 
 exports.findById = (id) => {
   return new Promise((resolve, reject) =>
-    resolve(JSON.parse(JSON.stringify(products)).find(product =>
-      product._id == id)
+    resolve(JSON.parse(JSON.stringify(campaigns)).find(campaign =>
+      campaign._id == id)
     )
   );
 }
