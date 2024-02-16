@@ -363,5 +363,3 @@ order.addEventListener('submit', (e) => {
     alert('Remplir le formulaire correctement')
   }
 })
-produits
-products
