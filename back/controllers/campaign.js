@@ -1,14 +1,14 @@
 const uuid = require('uuid/v1');
-const Product = require('../models/Product');
+const Campaign = require('../models/Campaign');
 
-exports.getAllProducts = (req, res, next) => {
-  Product.find().then(
-    (products) => {
-      const mappedProducts = products.map((product) => {
-        product.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + product.imageUrl;
-        return product;
+exports.getAllCampaigns = (req, res, next) => {
+  Campaign.find().then(
+    (campaigns) => {
+      const mappedCampaigns = campaigns.map((campaign) => {
+        campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
+        return campaign;
       });
-      res.status(200).json(mappedProducts);
+      res.status(200).json(mappedCampaigns);
     }
   ).catch(
     () => {
@@ -17,14 +17,14 @@ exports.getAllProducts = (req, res, next) => {
   );
 };
 
-exports.getOneProduct = (req, res, next) => {
-  Product.findById(req.params.id).then(
-    (product) => {
-      if (!product) {
-        return res.status(404).send(new Error('Product not found!'));
+exports.getOneCampaign = (req, res, next) => {
+  Campaign.findById(req.params.id).then(
+    (campaign) => {
+      if (!campaign) {
+        return res.status(404).send(new Error('Campaign not found!'));
       }
-      product.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + product.imageUrl;
-      res.status(200).json(product);
+      campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
+      res.status(200).json(campaign);
     }
   ).catch(
     () => {
@@ -46,26 +46,26 @@ exports.getOneProduct = (req, res, next) => {
  * products: [string] <-- array of product _id
  *
  */
-exports.orderProducts = (req, res, next) => {
+exports.orderCampaigns = (req, res, next) => {
   if (!req.body.contact ||
       !req.body.contact.firstName ||
       !req.body.contact.lastName ||
       !req.body.contact.address ||
       !req.body.contact.city ||
       !req.body.contact.email ||
-      !req.body.products) {
+      !req.body.campaigns) {
     return res.status(400).send(new Error('Bad request!'));
   }
   let queries = [];
-  for (let productId of req.body.products) {
+  for (let campaignId of req.body.campaigns) {
     const queryPromise = new Promise((resolve, reject) => {
-      Product.findById(productId).then(
-        (product) => {
-          if (!product) {
-            reject('Product not found: ' + productId);
+      Campaign.findById(campaignId).then(
+        (campaign) => {
+          if (!campaign) {
+            reject('Campaign not found: ' + campaignId);
           }
-          product.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + product.imageUrl;
-          resolve(product);
+          campaign.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + campaign.imageUrl;
+          resolve(campaign);
         }
       ).catch(
         () => {
@@ -76,11 +76,11 @@ exports.orderProducts = (req, res, next) => {
     queries.push(queryPromise);
   }
   Promise.all(queries).then(
-    (products) => {
+    (campaigns) => {
       const orderId = uuid();
       return res.status(201).json({
         contact: req.body.contact,
-        products: products,
+        campaigns: campaigns,
         orderId: orderId
       })
     }
